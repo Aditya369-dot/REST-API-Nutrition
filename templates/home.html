@@ -2,20 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Grades</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #007991, #78ffd6);
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 50px;
+            width: 80%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even){background-color: #f2f2f2;}
+        tr:hover {background-color: #ddd;}
+        .pagination {
+            margin-top: 20px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <a href="/about/">About</a>
-        <a href="/Contact/">Contact Us</a>
-        <a href="/store/">Store</a>
-    </nav>
-
-    <h1>Weather Data API</h1>
-    <h2>Historical Weather Data Api</h2>
-    <p>URL format: http://127.0.0.1:5000/api/v1/station/date </p>
-    <img src="{{url_for ('static, 'cat.png')}}" style="width:500px">
-    <br>
-    <br>
-    </body>
+    <div class="container">
+        <h1>Food Grades</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Food Name</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for food in foods %}
+                <tr>
+                    <td>{{ food['Food Name'] }}</td>
+                    <td>{{ food['Grade'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {% if current_page > 1 %}
+            <a href="{{ url_for('list_foods', page=current_page - 1) }}">Previous</a>
+            {% endif %}
+            {% if current_page < total_pages %}
+            <a href="{{ url_for('list_foods', page=current_page + 1) }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
 </html>
+
+
+
+

@@ -92,31 +92,16 @@
             <code>/nutrition/?diet=&lt;dietType&gt;</code>
             <p>Example: <a href="/nutrition/?diet=keto">/nutrition/?diet=keto</a></p>
         </div>
+        <div>
+            <a href="/foodlist">Check Food Items and Grades</a>
+        </div>
     </div>
     <script>
         function getNutrition() {
             const dietType = document.getElementById('dietSelection').value;
-            const sampleDietInstruction = document.getElementById('sampleDietInstruction');
-            const sampleDiet = document.getElementById('sampleDiet');
-
             if (dietType) {
-                // Example of setting a sample diet plan based on the diet selected.
-                // This would ideally be fetched from the server based on the selected diet.
-                const dietPlans = {
-                    'keto': 'A day plan includes Eggs for breakfast, Avocado salad for lunch, and Grilled salmon for dinner.',
-                    'paleo': 'Start with a smoothie, have a chicken salad for lunch, and enjoy a beef stir-fry for dinner.',
-                    'slowcarb': 'Enjoy scrambled eggs for breakfast, lentil soup for lunch, and grilled chicken for dinner.',
-                    'diabeticfriendly': 'Oatmeal for breakfast, a quinoa salad for lunch, and baked fish for dinner.',
-                    'balanced': 'Whole grain toast with avocado, turkey wrap for lunch, and grilled veggies with quinoa for dinner.',
-                    'suitableforbloodpressure': 'Fruit salad for breakfast, baked sweet potato for lunch, and salmon with steamed broccoli for dinner.',
-                    'dash': 'Porridge for breakfast, a tuna salad for lunch, and a vegetable stir-fry for dinner.'
-                };
-
-                sampleDiet.textContent = dietPlans[dietType];
-                sampleDietInstruction.style.display = 'block';
-
                 // Redirect to the filtered nutrition info URL
-                // window.location.href = `/nutrition/?diet=${dietType}`;
+                window.location.href = `/nutrition/?diet=${dietType}`;
             } else {
                 alert("Please select a diet type.");
             }
@@ -124,6 +109,7 @@
     </script>
 </body>
 </html>
+
 
 
 

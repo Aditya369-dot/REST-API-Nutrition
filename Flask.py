@@ -1,11 +1,32 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 
 # Load data once to avoid reloading
 df = pd.read_csv('pred_food.csv')
 df['Food Name'] = df['Food Name'].str.lower()  # make food name case-insensitive
+
+# Assume df is your DataFrame after reading pred_food.csv
+
+# Set default grade to A
+df['Grade'] = 'A'
+
+# Set conditions for different grades
+conditions = [
+    (df['Suitable for Diabetes'] != 1) & (df['Suitable for Blood Pressure'] != 1) & (df['Glycemic Index'] > 50),
+    (df['Suitable for Diabetes'] != 1) & (df['Suitable for Blood Pressure'] != 1) & (df['Glycemic Index'].between(30, 50)),
+    (df['Glycemic Index'] < 30)
+]
+
+# Set grade choices corresponding to the above conditions
+choices = ['C', 'B', 'A']
+
+# Use `select` to apply conditions and choices
+df['Grade'] = np.select(conditions, choices, default='A')
+
+# Now df should have proper grades set based on the conditions
 
 # Sample diet plans for each diet type
 sample_diets = {
@@ -17,6 +38,23 @@ sample_diets = {
     "suitableforbloodpressure": "Sample Diet for Blood Pressure: Breakfast - Oatmeal with sliced bananas. Lunch - Baked tilapia with kale salad. Dinner - Stir-fried tofu with vegetables.",
     "dash": "Sample DASH Diet: Breakfast - Whole grain cereal with milk. Lunch - Grilled chicken sandwich with side salad. Dinner - Baked salmon with brown rice and steamed spinach."
 }
+
+@app.route("/")
+def interface():
+    return render_template("UI.html")
+
+@app.route("/foodlist", methods=['GET'])
+def list_foods():
+    page = request.args.get('page', 1, type=int)
+    items_per_page = 20
+    start = (page - 1) * items_per_page
+    end = start + items_per_page
+    foods = df[['Food Name', 'Grade']][start:end].to_dict(orient='records')
+    # Calculate total pages
+    total_pages = (df.shape[0] - 1) // items_per_page + 1
+    return render_template('home.html', foods=foods, current_page=page, total_pages=total_pages)
+
+
 
 @app.route("/nutrition/<foodname>", methods=['GET'])
 def get_nutrition(foodname):
@@ -50,6 +88,8 @@ def get_filtered_nutrition():
             return jsonify({"error": "No foods match this dietary preference"}), 404
     else:
         return jsonify({"error": "Invalid or no diet specified"}), 400
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
